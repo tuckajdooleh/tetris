@@ -40,10 +40,8 @@
 			class Shape {
 				constructor(shape) {
 					this.blocks = [];
-					this.shadowBlocks = []
 					for (var block of shape.blocks) {
 						this.blocks.push(new Pos(block.row, block.col));
-						this.shadowBlocks.push(new Pos(block.row, block.col));
 					}
 					this.checkLose()
 					for (var pos of this.blocks) {
@@ -52,64 +50,38 @@
 
 					this.pivot = shape.pivot
 
+					this.oldShadow = null
+
+					this.generateShadow()
+
 				}
 				
-				moveShadow(xOffset, yOffset) {
-					for (var pos of this.blocks) {
-						grid[pos.row][pos.col] = spaceGraphic;
-					}
+				generateShadow(){
 
-					for (var pos of this.blocks) {
-						if (yOffset < 0 && pos.row <= 0) {
-							for (var pos of this.blocks) {
-								grid[pos.row][pos.col] = blockGraphic;
-							}
-							return false;
-						}
-						if (yOffset > 0 && pos.row >= height - 1) {
-							for (var pos of this.blocks) {
-								grid[pos.row][pos.col] = blockGraphic;
-							}
-							return false;
-						}
-
-						if (xOffset < 0 && pos.col <= 0) {
-							for (var pos of this.blocks) {
-								grid[pos.row][pos.col] = blockGraphic;
-							}
-							return false;
-						}
-						if (xOffset > 0 && pos.col >= 9) {
-							for (var pos of this.blocks) {
-								grid[pos.row][pos.col] = blockGraphic;
-							}
-							return false;
-						}
-
-						if (grid[pos.row + yOffset][pos.col + xOffset] == blockGraphic) {
-							for (var pos of this.blocks) {
-								grid[pos.row][pos.col] = blockGraphic;
-							}
-							return false;
+					if(this.oldShadow){
+						for(var block of this.oldShadow){//erase old shadow
+							grid[block.row][block.col] = spaceGraphic
 						}
 					}
 
-					for (var i = 0; i < this.blocks.length; i++) {
-						var pos = this.blocks[i];
-
-						//grid[pos.row][pos.col] = spaceGraphic;
-
-						this.blocks[i] = new Pos(
-							this.blocks[i].row + yOffset,
-							this.blocks[i].col + xOffset
-						);
-
-						pos = this.blocks[i];
-
-						grid[pos.row][pos.col] = blockGraphic;
+					//erase old shadow graphic
+					var originalPos = []
+					var curShadow = []
+					for(var block of this.blocks){
+						originalPos.push(new Pos(block.row,block.col))
 					}
-					return true;
+					while(this.down())continue;
+					for(var block of this.blocks){//move current block to bottom, then overwrite with shadow graphic, 
+						grid[block.row][block.col] = shadowGraphic
+						curShadow.push(new Pos(block.row,block.col))
+					}
+					this.oldShadow = curShadow;
+					for(var i = 0; i < this.blocks.length; i++){//then move back to top and fill in with normal graphic
+						this.blocks[i] = originalPos[i]
+						grid[this.blocks[i].row][this.blocks[i].col]=blockGraphic
+					}
 				}
+
 				move(xOffset, yOffset) {
 					for (var pos of this.blocks) {
 						grid[pos.row][pos.col] = spaceGraphic;
@@ -167,10 +139,13 @@
 					return true;
 				}
 				left() {
-					return this.move(-1, 0);
+					this.move(-1, 0);
+					this.generateShadow()
+
 				}
 				right() {
-					return this.move(1, 0);
+					this.move(1, 0);
+					this.generateShadow()
 				}
 				down() {
 					return this.move(0, 1);
@@ -201,6 +176,9 @@
 						}
 					}
 					for(var block of this.blocks)grid[block.row][block.col]=blockGraphic
+
+
+					this.generateShadow()
 				}
 				rotatePoint(point, tempPivot){
 					
