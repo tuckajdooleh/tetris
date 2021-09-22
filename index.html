@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Document</title>
+	</head>
+	<body>
+		<p id="grid"></p>
+
+		<script>
+			//shapes will just be an array of coordinates that I will loop over and blah blah blah
+
+			const height = 20;
+
+			var grid = Array(height)
+				.fill(null)
+				.map(() => Array(10).fill("-"));
+
+			class Pos {
+				constructor(row, col) {
+					this.row = row;
+					this.col = col;
+				}
+			}
+
+			class Shape {
+				constructor(blocks) {
+					this.blocks = [];
+					for (var block of blocks) {
+						this.blocks.push(new Pos(block.row, block.col));
+					}
+
+					for (var pos of this.blocks) {
+						grid[pos.row][pos.col] = "0";
+					}
+				}
+				move(xOffset, yOffset) {
+					for (var pos of this.blocks) {
+						grid[pos.row][pos.col] = "-";
+					}
+
+					for (var pos of this.blocks) {
+						if (yOffset < 0 && pos.row <= 0) {
+							for (var pos of this.blocks) {
+								grid[pos.row][pos.col] = "0";
+							}
+							return false;
+						}
+						if (yOffset > 0 && pos.row >= height - 1) {
+							for (var pos of this.blocks) {
+								grid[pos.row][pos.col] = "0";
+							}
+							return false;
+						}
+
+						if (xOffset < 0 && pos.col <= 0) {
+							for (var pos of this.blocks) {
+								grid[pos.row][pos.col] = "0";
+							}
+							return false;
+						}
+						if (xOffset > 0 && pos.col >= 10) {
+							for (var pos of this.blocks) {
+								grid[pos.row][pos.col] = "0";
+							}
+							return false;
+						}
+
+						if (grid[pos.row + yOffset][pos.col + xOffset] == "0") {
+							for (var pos of this.blocks) {
+								grid[pos.row][pos.col] = "0";
+							}
+							return false;
+						}
+					}
+
+					for (var i = 0; i < this.blocks.length; i++) {
+						var pos = this.blocks[i];
+
+						grid[pos.row][pos.col] = "-";
+
+						this.blocks[i] = new Pos(
+							this.blocks[i].row + yOffset,
+							this.blocks[i].col + xOffset
+						);
+
+						pos = this.blocks[i];
+
+						grid[pos.row][pos.col] = "0";
+					}
+					return true;
+				}
+				left() {
+					return this.move(-1, 0);
+				}
+				right() {
+					return this.move(1, 0);
+				}
+				down() {
+					return this.move(0, 1);
+				}
+				rotate() {}
+			}
+
+			const square = [
+				new Pos(2, 4),
+				new Pos(2, 5),
+				new Pos(1, 4),
+				new Pos(1, 5),
+			];
+
+			var currentShape = null;
+
+			document.addEventListener("keydown", function (event) {
+				if (event.keyCode == 37) {
+					currentShape.left();
+					printGrid(grid);
+				} else if (event.keyCode == 39) {
+					currentShape.right();
+					printGrid(grid);
+				} else if (event.keyCode == 32) {
+					while (currentShape.down() != false) continue;
+					checkRows();
+					currentShape = new Shape(square);
+					printGrid(grid);
+				}
+			});
+
+			function checkRows() {
+				const set = new Map();
+				for (var pos of currentShape.blocks) {
+					if (!set.has(pos.row)) {
+						var shouldDelete = true;
+						for (var i = 0; i < 10; i++) {
+							if (grid[pos.row][i] != "0") {
+								shouldDelete = false;
+								break;
+							}
+						}
+
+						if (shouldDelete) {
+							for (var i = 0; i < 10; i++) {
+								grid[pos.row][i] = "-";
+							}
+						}
+						set.set(pos.row, true);
+					}
+				}
+			}
+
+			function update() {
+				if (!currentShape.down()) {
+					//check rows for completion
+
+					checkRows();
+
+					currentShape = new Shape(square);
+					//console.log(square);
+				} else {
+					console.log("down");
+				}
+				printGrid(grid);
+				console.log("update");
+				setTimeout(update, 500);
+			}
+
+			function printGrid(grid) {
+				var elementString = "";
+				for (var row of grid) {
+					var rowString = "";
+					for (var val of row) {
+						rowString += val + "&emsp;";
+					}
+					elementString += rowString + "<br>";
+				}
+				document.getElementById("grid").innerHTML = elementString;
+			}
+			currentShape = new Shape(square);
+			setTimeout(update, 500);
+		</script>
+	</body>
+</html>
