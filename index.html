@@ -6,10 +6,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Document</title>
 	</head>
-	<body>
-		<p id="score">0</p>
+	<body style="background-color: darkslategrey; font-size: 32px">
+		<span>Score: </span><span id="score" style="">0</span>
 		<p id="grid"></p>
-		<div id="table"></div>
+		<div id="table" style="margin: auto; width: 10%; padding: 10px"></div>
 
 		<script>
 			//shapes will just be an array of coordinates that I will loop over and blah blah blah
@@ -24,7 +24,7 @@
 			for (var r = 0; r < height; r++) {
 				var row = document.createElement("DIV");
 				row.style.display = "flex";
-				row.style.border = "solid black 1px";
+				//row.style.border = "solid black 1px";
 
 				for (var c = 0; c < 10; c++) {
 					var key = "" + r + "," + c;
@@ -33,8 +33,8 @@
 						key +
 						`"
 				style="
-					border: solid black 1px;
-					padding: 8px;
+					border: solid white 1px;
+					padding: 12px;
 					background-color: brown;
 				"
 			>
