@@ -17,9 +17,11 @@
 			var score = 0;
 			var level = 1;
 			var speed = 500;
-			const height = 30;
+			const height = 20;
 
 			var table = document.getElementById("table");
+
+			var randPieceBag = [];
 
 			for (var r = 0; r < height; r++) {
 				var row = document.createElement("DIV");
@@ -34,7 +36,7 @@
 						`"
 				style="
 					border: solid white 1px;
-					padding: 12px;
+					padding: 18px;
 					background-color: brown;
 				"
 			>
@@ -255,69 +257,69 @@
 
 			const square = {
 				blocks: [
-					new Pos(2, 4),
-					new Pos(2, 5),
 					new Pos(1, 4),
 					new Pos(1, 5),
+					new Pos(0, 4),
+					new Pos(0, 5),
 				],
 				pivot: 1,
 			};
 
 			const line = {
 				blocks: [
-					new Pos(1, 3),
-					new Pos(1, 4),
-					new Pos(1, 5),
-					new Pos(1, 6),
+					new Pos(0, 3),
+					new Pos(0, 4),
+					new Pos(0, 5),
+					new Pos(0, 6),
 				],
 				pivot: 1,
 			};
 
 			const k = {
 				blocks: [
-					new Pos(1, 3),
+					new Pos(0, 3),
+					new Pos(0, 4),
+					new Pos(0, 5),
 					new Pos(1, 4),
-					new Pos(1, 5),
-					new Pos(2, 4),
 				],
 				pivot: 1,
 			};
 
 			const z = {
 				blocks: [
-					new Pos(1, 3),
-					new Pos(1, 4),
-					new Pos(2, 4),
-					new Pos(2, 5),
-				],
-				pivot: 1,
-			};
-
-			const otherZ = {
-				blocks: [
-					new Pos(2, 3),
-					new Pos(2, 4),
+					new Pos(0, 3),
+					new Pos(0, 4),
 					new Pos(1, 4),
 					new Pos(1, 5),
 				],
 				pivot: 1,
 			};
 
+			const otherZ = {
+				blocks: [
+					new Pos(1, 3),
+					new Pos(1, 4),
+					new Pos(0, 4),
+					new Pos(0, 5),
+				],
+				pivot: 1,
+			};
+
 			const L = {
 				blocks: [
+					new Pos(0, 4),
 					new Pos(1, 4),
 					new Pos(2, 4),
-					new Pos(3, 4),
-					new Pos(3, 5),
+					new Pos(2, 5),
 				],
 				pivot: 1,
 			};
 			const otherL = {
 				blocks: [
+					new Pos(0, 4),
 					new Pos(1, 4),
 					new Pos(2, 4),
-					new Pos(3, 4),
-					new Pos(3, 3),
+					new Pos(2, 3),
 				],
 				pivot: 1,
 			};
@@ -325,8 +327,25 @@
 			const pieces = [square, line, k, z, otherZ, L, otherL];
 
 			function getRandPiece() {
-				var randNum = Math.floor(Math.random() * pieces.length);
-				return pieces[randNum];
+				if (randPieceBag.length == 0) {
+					var index = pieces.length - 1;
+
+					var randNum = 0;
+
+					while (index > 0) {
+						randNum = Math.floor(Math.random() * index);
+
+						randPieceBag.push(pieces[randNum]);
+
+						var temp = pieces[randNum];
+						pieces[randNum] = pieces[index];
+						pieces[index] = temp;
+
+						index--;
+					}
+				}
+				//console.log(randPieceBag);
+				return randPieceBag.pop();
 			}
 
 			var currentShape = null;
