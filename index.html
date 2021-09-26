@@ -248,6 +248,13 @@
 						if (grid[block.row][block.col] == blockGraphic) {
 							dead = true;
 							alert("Game Over. Score is:" + score);
+							
+							currentShape = new Shape(getRandPiece());
+grid = Array(height)
+				.fill(null)
+				.map(() => Array(10).fill(spaceGraphic));
+				
+					printGrid(grid);
 							return true;
 						}
 					}
