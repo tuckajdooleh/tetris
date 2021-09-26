@@ -17,7 +17,7 @@
 			var score = 0;
 			var level = 1;
 			var speed = 500;
-			const height = 20;
+			const height = 25;
 
 			var table = document.getElementById("table");
 
@@ -36,7 +36,7 @@
 						`"
 				style="
 					border: solid white 1px;
-					padding: 18px;
+					padding: 15px;
 					background-color: brown;
 				"
 			>
@@ -248,15 +248,16 @@
 						if (grid[block.row][block.col] == blockGraphic) {
 							dead = true;
 							alert("Game Over. Score is:" + score);
+							location.reload();
 							
 							
-grid = Array(height)
-				.fill(null)
-				.map(() => Array(10).fill(spaceGraphic));
+//grid = Array(height)
+				//.fill(null)
+		//		.map(() => Array(10).fill(spaceGraphic));
 				
-				currentShape = new Shape(getRandPiece());
+				//currentShape = new Shape(getRandPiece());
 				
-					printGrid(grid);
+					//printGrid(grid);
 							return true;
 						}
 					}
