@@ -249,10 +249,12 @@
 							dead = true;
 							alert("Game Over. Score is:" + score);
 							
-							currentShape = new Shape(getRandPiece());
+							
 grid = Array(height)
 				.fill(null)
 				.map(() => Array(10).fill(spaceGraphic));
+				
+				currentShape = new Shape(getRandPiece());
 				
 					printGrid(grid);
 							return true;
