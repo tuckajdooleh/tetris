@@ -400,7 +400,7 @@ var starty = null
   });
   
   window.addEventListener("touchend",function(event){
-    var offset = 100;//at least 100px are a swipe
+    var offset = 10;//at least 100px are a swipe
     if(startx){
       //the only finger that hit the screen left it
       var endx = event.changedTouches.item(0).clientX;
