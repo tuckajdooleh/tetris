@@ -382,33 +382,54 @@
 				}
 			});
 			
-var start = null;
+var startx = null;
+var starty = null
  window.addEventListener("touchstart",function(event){
    if(event.touches.length === 1){
       //just one finger touched
-      start = event.touches.item(0).clientX;
-    }else{
+      startx = event.touches.item(0).clientX;
+    starty = event.touches.item(0).clientY;
+  
+     
+   }else{
       //a second finger hit the screen, abort the touch
-      start = null;
+
+      startx = null;
+      starty = null
     }
   });
   
   window.addEventListener("touchend",function(event){
     var offset = 100;//at least 100px are a swipe
-    if(start){
+    if(startx){
       //the only finger that hit the screen left it
-      var end = event.changedTouches.item(0).clientX;
+      var endx = event.changedTouches.item(0).clientX;
+      
+var endy = event.changedTouches.item(0).clientY;
 
-      if(end > start + offset){
+      if(endx > startx + offset){
        //a left -> right swipe
 currentShape.right();
 					printGrid(grid);
-      }
-      if(end < start - offset ){
+      }else if(endx < startx - offset ){
        //a right -> left swipe
 currentShape.left();
 					printGrid(grid);
+      }else if(endy > starty + offset ){
+       //swipe down
+					//space
+					while (currentShape.down() != false) continue;
+					checkRows();
+					currentShape = new Shape(getRandPiece());
+
+					printGrid(grid);
+      }else{
+        //rotate
+currentShape.rotate();
+					printGrid(grid);
+        
       }
+      
     }
   });
 
